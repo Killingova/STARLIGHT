@@ -9,7 +9,8 @@ const initialState = {
   selectedModules: {
     qrCodeScan: true, // QR-Code-Scan-Modul aktiviert
     eGKVerification: true, // eGK-Verifikations-Modul aktiviert
-    anamneseForm: false, // Anamneseformular-Modul deaktiviert
+    anamneseForm: true, // Standardmäßig aktiviertes Anamneseformular
+    contactInfoForm: false, // Kann optional aktiviert werden
   },
 };
 
