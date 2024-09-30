@@ -41,7 +41,7 @@ export const AdminPanelProvider = ({ children }) => {
 
   return (
     <AdminPanelContext.Provider value={{ state, dispatch }}>
-      {children} {/* Übergibt die Kinderkomponenten, die den Kontext verwenden */}
+      {children}
     </AdminPanelContext.Provider>
   );
 };

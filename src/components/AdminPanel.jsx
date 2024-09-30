@@ -1,15 +1,15 @@
+// src/components/AdminPanel.jsx
+
 import React, { useContext, useEffect } from 'react';
 import { AdminPanelContext } from '../contexts/AdminPanelContext'; // Import des AdminPanel-Kontexts
 import { ProgressBarContext } from '../contexts/ProgressBarContext'; // Import des ProgressBar-Kontexts
+import KioskButton from './KioskButton'; // Importiere den Kiosk-Modus-Button
 import { TOGGLE_KIOSK_MODE, TOGGLE_MODULE } from '../contexts/actionTypes'; // Importiere die Aktionstypen
 
 // Hauptkomponente für das Admin-Panel
 const AdminPanel = () => {
-  // Zugriff auf den Zustand und die Dispatch-Funktion aus dem AdminPanel-Kontext
-  const { state, dispatch } = useContext(AdminPanelContext);
-  
-  // Zugriff auf die Funktion aus dem ProgressBar-Kontext, um die aktiven Schritte zu setzen
-  const { setActiveSteps } = useContext(ProgressBarContext);
+  const { state, dispatch } = useContext(AdminPanelContext); // Zugriff auf den Admin-Panel-Zustand
+  const { setActiveSteps } = useContext(ProgressBarContext); // Zugriff auf Progressbar-Kontext
 
   // Effekt: Aktualisiere die aktiven Schritte des Check-In-Prozesses, wenn sich die Module ändern
   useEffect(() => {
@@ -19,12 +19,12 @@ const AdminPanel = () => {
 
   // Umschalten des Kiosk-Modus
   const handleKioskModeChange = () => {
-    dispatch({ type: TOGGLE_KIOSK_MODE }); // Verwendung der Konstanten für die Aktion
+    dispatch({ type: TOGGLE_KIOSK_MODE });
   };
 
   // Umschalten der aktivierten Module
   const handleModuleChange = (module) => {
-    dispatch({ type: TOGGLE_MODULE, module }); // Verwendung der Konstanten für die Aktion
+    dispatch({ type: TOGGLE_MODULE, module });
   };
 
   return (
@@ -44,6 +44,11 @@ const AdminPanel = () => {
         </label>
       </div>
 
+      {/* Kiosk-Modus Button */}
+      <div className="mb-4">
+        <KioskButton />
+      </div>
+
       {/* Aktive Module */}
       <h2 className="text-xl font-semibold mt-6 mb-4">Aktive Module</h2>
       <div className="space-y-4">
@@ -56,7 +61,9 @@ const AdminPanel = () => {
                 checked={state.selectedModules[module]}
                 onChange={() => handleModuleChange(module)}
               />
-              <span className="ml-2 text-gray-700 capitalize">{module.replace(/([A-Z])/g, ' $1').trim()}</span>
+              <span className="ml-2 text-gray-700 capitalize">
+                {module.replace(/([A-Z])/g, ' $1').trim()}
+              </span>
             </label>
           </div>
         ))}
