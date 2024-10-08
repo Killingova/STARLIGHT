@@ -1,8 +1,7 @@
-// src/App.jsx
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AdminPanelProvider } from './contexts/AdminPanelContext';
-import  ProgressBarProvider  from './contexts/ProgressBarContext';
+import { ProgressBarProvider } from './contexts/ProgressBarContext'; // Nutze den benannten Export
 
 // Importiere alle Komponenten
 import Navbar from './components/Navbar';
@@ -19,28 +18,28 @@ import PrivateRoute from './components/PrivateRoute';
 import ErrorPage from './pages/ErrorPage';
 
 function App() {
-
   useEffect(() => {
-    // Hier kannst du die initialen Einstellungen der Praxis aus dem Local Storage laden
-    const settings = localStorage.getItem('praxisSettings');
-    if (!settings) {
-      // Initiale Einstellungen setzen, falls keine vorhanden sind
-      localStorage.setItem('praxisSettings', JSON.stringify({ /* Standard-Einstellungen */ }));
+    try {
+      const settings = localStorage.getItem('praxisSettings');
+      if (!settings) {
+        const initialSettings = {
+          theme: 'light',
+          language: 'de',
+        };
+        localStorage.setItem('praxisSettings', JSON.stringify(initialSettings));
+      }
+    } catch (error) {
+      console.error("App: Fehler beim Laden der Praxis-Einstellungen:", error);
     }
   }, []);
 
   return (
-    <AdminPanelProvider>
-      <ProgressBarProvider>
+    <ProgressBarProvider>
+      <AdminPanelProvider>
         <Router>
           <div className="flex flex-col min-h-screen">
-            {/* Navbar für die globale Navigation */}
             <Navbar />
-            
-            {/* Progressbar wird global in der App angezeigt */}
             <Progressbar />
-            
-            {/* Hauptinhalt */}
             <main className="flex-grow">
               <Routes>
                 <Route path="/" element={<StartPage />} />
@@ -48,22 +47,16 @@ function App() {
                 <Route path="/egk-verification" element={<EGKVerificationPage />} />
                 <Route path="/form" element={<FormPage />} />
                 <Route path="/complete" element={<ProcessCompletePage />} />
-                
-                {/* Admin-Bereich */}
                 <Route path="/admin" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
                 <Route path="/admin-login" element={<AdminAuthPage />} />
-                
-                {/* Fallback für nicht definierte Routen */}
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </main>
-
-            {/* Footer für globale Informationen */}
             <Footer />
           </div>
         </Router>
-      </ProgressBarProvider>
-    </AdminPanelProvider>
+      </AdminPanelProvider>
+    </ProgressBarProvider>
   );
 }
 
