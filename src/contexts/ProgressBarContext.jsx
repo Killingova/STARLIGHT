@@ -1,3 +1,4 @@
+// src/contexts/ProgressBarContext.jsx
 import React, { createContext, useState, useCallback } from 'react';
 
 export const ProgressBarContext = createContext();
@@ -7,7 +8,8 @@ export const ProgressBarProvider = ({ children }) => {
   const [steps, setSteps] = useState([
     { id: 'qrScan', name: 'QR-Code Scan', percentage: 25 },
     { id: 'egkRead', name: 'eGK Lesen', percentage: 50 },
-    { id: 'anamnesis', name: 'Anamnese', percentage: 100 },
+    { id: 'anamnesis', name: 'Anamnese', percentage: 75 },
+    { id: 'complete', name: 'Fertig', percentage: 100 },
   ]);
 
   const updateProgress = useCallback((stepId) => {
@@ -17,12 +19,12 @@ export const ProgressBarProvider = ({ children }) => {
     }
   }, [steps]);
 
-  const setActiveSteps = (newSteps) => {
-    setSteps(newSteps);
+  const resetProgress = () => {
+    setProgress(0);
   };
 
   return (
-    <ProgressBarContext.Provider value={{ progress, steps, updateProgress, setActiveSteps }}>
+    <ProgressBarContext.Provider value={{ progress, steps, updateProgress, resetProgress }}>
       {children}
     </ProgressBarContext.Provider>
   );

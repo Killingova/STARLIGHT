@@ -1,24 +1,19 @@
 // src/pages/StartPage.jsx
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ProgressBarContext } from '../contexts/ProgressBarContext';
-import { AdminPanelContext } from '../contexts/AdminPanelContext';
+import useProgressBar from '../hooks/useProgressBar';
 
 const StartPage = () => {
-  const { updateProgress } = useContext(ProgressBarContext);
-  const { state } = useContext(AdminPanelContext);
+  const { resetProgress } = useProgressBar();
   const navigate = useNavigate();
 
+  // Reset ProgressBar on page load
   useEffect(() => {
-    updateProgress('qrScan');
-  }, [updateProgress]);
+    resetProgress();
+  }, [resetProgress]);
 
   const handleStart = () => {
-    if (state.selectedModules.qrCodeScan) {
-      navigate('/qr-code-scan');
-    } else {
-      navigate('/egk-verification');
-    }
+    navigate('/qr-code-scan');
   };
 
   return (

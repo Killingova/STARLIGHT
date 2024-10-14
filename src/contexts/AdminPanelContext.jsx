@@ -1,4 +1,6 @@
-import React, { createContext, useReducer } from 'react';
+// src/contexts/AdminPanelContext.jsx
+import React, { createContext, useReducer, useMemo } from 'react';
+import { TOGGLE_KIOSK_MODE, TOGGLE_MODULE } from './actionTypes';
 
 export const AdminPanelContext = createContext();
 
@@ -14,9 +16,9 @@ const initialState = {
 
 const adminPanelReducer = (state, action) => {
   switch (action.type) {
-    case 'TOGGLE_KIOSK_MODE':
+    case TOGGLE_KIOSK_MODE:
       return { ...state, isKioskModeEnabled: !state.isKioskModeEnabled };
-    case 'TOGGLE_MODULE':
+    case TOGGLE_MODULE:
       return {
         ...state,
         selectedModules: {
@@ -32,8 +34,10 @@ const adminPanelReducer = (state, action) => {
 export const AdminPanelProvider = ({ children }) => {
   const [state, dispatch] = useReducer(adminPanelReducer, initialState);
 
+  const contextValue = useMemo(() => ({ state, dispatch }), [state, dispatch]);
+
   return (
-    <AdminPanelContext.Provider value={{ state, dispatch }}>
+    <AdminPanelContext.Provider value={contextValue}>
       {children}
     </AdminPanelContext.Provider>
   );

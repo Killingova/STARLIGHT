@@ -1,3 +1,4 @@
+// src/components/Progressbar.jsx
 import React, { useContext } from 'react';
 import { ProgressBarContext } from '../contexts/ProgressBarContext';
 import { RotateCcw } from 'lucide-react';
@@ -21,7 +22,7 @@ const ProgressBar = () => {
       </div>
 
       <div className="flex justify-between items-center mb-4">
-        {steps.map((step, index) => (
+        {steps.map((step) => (
           <div key={step.id} className="flex flex-col items-center">
             <span className={`text-3xl ${progress >= step.percentage ? 'text-blue-600' : 'text-gray-400'}`}>
               {step.name}
