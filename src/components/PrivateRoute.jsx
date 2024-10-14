@@ -1,16 +1,17 @@
-// src/components/PrivateRoute.jsx
-
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-// Geschützte Route
-const PrivateRoute = ({ children }) => {
-  // Überprüfe nur die Authentifizierung (ohne Kiosk-Modus-Prüfung)
+const PrivateRoute = ({ children, redirectPath = '/admin-login', errorMessage = null }) => {
   const isAuthenticated = Boolean(sessionStorage.getItem('isAuthenticated'));
 
-  // Wenn authentifiziert, zeige die Kinderkomponenten an
-  // Wenn nicht authentifiziert, leite zur Admin-Login-Seite weiter
-  return isAuthenticated ? children : <Navigate to="/admin-login" />;
+  if (!isAuthenticated) {
+    if (errorMessage) {
+      alert(errorMessage);
+    }
+    return <Navigate to={redirectPath} />;
+  }
+
+  return children;
 };
 
 export default PrivateRoute;

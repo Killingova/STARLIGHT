@@ -1,20 +1,37 @@
+// src/components/Navbar.jsx
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom'; // Für die Navigation
-import { Menu } from 'lucide-react'; // Icon für das Burger-Menü
-import { AdminPanelContext } from '../contexts/AdminPanelContext'; // Import des AdminPanel-Kontexts
+import { Link } from 'react-router-dom';
+import { Menu } from 'lucide-react';
+import { AdminPanelContext } from '../contexts/AdminPanelContext';
+import { ThemeContext } from '../contexts/ThemeContext';
+import { LanguageContext } from '../contexts/LanguageContext';
 
 // Hauptkomponente der Navigationsleiste
 const Navbar = () => {
-  // Zugriff auf `isKioskModeEnabled` aus dem AdminPanel-Kontext
   const { isKioskModeEnabled } = useContext(AdminPanelContext);
+  const { theme, setTheme } = useContext(ThemeContext);
+  const { language, setLanguage } = useContext(LanguageContext);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
+  const toggleLanguage = () => {
+    setLanguage((prevLanguage) => (prevLanguage === 'de' ? 'en' : 'de'));
+  };
 
   return (
-    <nav className="bg-[#002D5F] flex justify-end p-4">
-      {/* Bedingte Anzeige des Burger-Menüs */}
-      {/* Wird nur angezeigt, wenn der Kiosk-Modus deaktiviert ist */}
+    <nav className={`bg-${theme === 'light' ? 'white' : 'gray-900'} p-4 flex justify-between`}>
+      <button onClick={toggleTheme}>
+        {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+      </button>
+      <button onClick={toggleLanguage}>
+        {language === 'de' ? 'Switch to English' : 'Wechseln zu Deutsch'}
+      </button>
+
       {!isKioskModeEnabled && (
         <Link to="/admin">
-          <BurgerMenu /> {/* Burger-Menü wird hier eingebunden */}
+          <BurgerMenu />
         </Link>
       )}
     </nav>
@@ -24,8 +41,7 @@ const Navbar = () => {
 // Komponente für das Burger-Menü
 const BurgerMenu = () => (
   <div className="cursor-pointer">
-    {/* Lucide Menu-Icon mit weißer Farbe und Größe 32px */}
-    <Menu size={32} color="white" />
+    <Menu size={32} color="black" />
   </div>
 );
 

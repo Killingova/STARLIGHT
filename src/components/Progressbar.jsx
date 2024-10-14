@@ -15,7 +15,10 @@ const ProgressBar = () => {
             <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${progress}%` }} />
           </div>
         </div>
-        <button onClick={() => updateProgress(steps[1].id)} className="text-blue-600 hover:text-blue-800 transition-colors">
+        <button 
+          onClick={() => updateProgress(steps[1].id)} 
+          className="text-blue-600 hover:text-blue-800 transition-colors"
+        >
           <RotateCcw size={24} className="mr-2 inline-block" />
           Refresh
         </button>

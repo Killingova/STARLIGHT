@@ -1,7 +1,10 @@
 // src/utils/constants.jsx
 
-// API-URL-Konstanten
-export const API_BASE_URL = 'https://api.example.com';
+// API-URL-Konstanten (Entwicklung/Produktion basierend auf der Umgebung)
+export const API_BASE_URL = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:5000' // Lokale Entwicklung
+  : 'https://api.example.com'; // Produktion
+
 export const QR_CODE_API_ENDPOINT = `${API_BASE_URL}/qr-code`;
 export const EGK_API_ENDPOINT = `${API_BASE_URL}/egk-verification`;
 export const ANAMNESE_API_ENDPOINT = `${API_BASE_URL}/anamnese`;

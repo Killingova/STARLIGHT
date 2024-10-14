@@ -1,11 +1,11 @@
 // src/contexts/ProgressBarContext.jsx
-import React, { createContext, useState, useCallback } from 'react';
+import React, { createContext, useState, useCallback, useMemo } from 'react';
 
 export const ProgressBarContext = createContext();
 
 export const ProgressBarProvider = ({ children }) => {
   const [progress, setProgress] = useState(0);
-  const [steps, setSteps] = useState([
+  const [steps] = useState([
     { id: 'qrScan', name: 'QR-Code Scan', percentage: 25 },
     { id: 'egkRead', name: 'eGK Lesen', percentage: 50 },
     { id: 'anamnesis', name: 'Anamnese', percentage: 75 },
@@ -19,12 +19,19 @@ export const ProgressBarProvider = ({ children }) => {
     }
   }, [steps]);
 
-  const resetProgress = () => {
+  const resetProgress = useCallback(() => {
     setProgress(0);
-  };
+  }, []);
+
+  const contextValue = useMemo(() => ({
+    progress,
+    steps,
+    updateProgress,
+    resetProgress,
+  }), [progress, steps, updateProgress, resetProgress]);
 
   return (
-    <ProgressBarContext.Provider value={{ progress, steps, updateProgress, resetProgress }}>
+    <ProgressBarContext.Provider value={contextValue}>
       {children}
     </ProgressBarContext.Provider>
   );
