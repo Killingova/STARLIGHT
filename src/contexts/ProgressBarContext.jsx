@@ -9,10 +9,12 @@ export function ProgressBarProvider({ children }) {
   // Zustand für den Fortschritt und die Schritte der Progress-Bar
   const [progress, setProgress] = useState(0);
   const [steps] = useState([
-    { id: 'qrScan', name: 'QR-Code Scan', percentage: 25 },
-    { id: 'egkRead', name: 'eGK Lesen', percentage: 50 },
-    { id: 'anamnesis', name: 'Anamnese', percentage: 75 },
-    { id: 'complete', name: 'Fertig', percentage: 100 },
+    { id: 'start', name: 'Start', percentage: 10, icon: 'StartIcon' },
+    { id: 'qrScan', name: 'QR-Code Scan', percentage: 25, icon: 'QrCode' },
+    { id: 'egkRead', name: 'eGK Lesen', percentage: 40, icon: 'CreditCard' },
+    { id: 'anamnesis', name: 'Anamnese', percentage: 60, icon: 'ClipboardList' },
+    { id: 'contactInfo', name: 'Kontaktinformationen', percentage: 75, icon: 'UserCheck' },
+    { id: 'complete', name: 'Fertig', percentage: 100, icon: 'CheckCircle' },
   ]);
 
   // Funktion zum Aktualisieren des Fortschritts basierend auf dem Schritt

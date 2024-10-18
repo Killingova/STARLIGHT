@@ -1,29 +1,25 @@
-// src/hooks/useAdminPanel.jsx
 import { useContext, useCallback } from 'react';
 import { AdminPanelContext } from '../contexts/AdminPanelContext';
 import { TOGGLE_KIOSK_MODE, TOGGLE_MODULE } from '../contexts/actionTypes';
 
-// Custom Hook für den Zugriff auf den AdminPanel-Kontext
+// Custom Hook für AdminPanel-Kontext
 const useAdminPanel = () => {
-  // Holen des Zustands und der Dispatch-Funktion aus dem Kontext
+  // Destructure state und dispatch aus dem AdminPanel-Kontext
   const { state, dispatch } = useContext(AdminPanelContext);
 
-  // Funktion zum Umschalten des Kiosk-Modus
+  // Funktion zum Umschalten des Kiosk-Modus, memoisiert mit useCallback
   const toggleKioskMode = useCallback(() => {
-    console.log('Toggling Kiosk Mode');
     dispatch({ type: TOGGLE_KIOSK_MODE });
-  }, [dispatch]);
+    console.log('Kiosk-Modus umgeschaltet:', state.isKioskModeEnabled);
+  }, [dispatch, state.isKioskModeEnabled]);
 
-  // Funktion zum Umschalten eines bestimmten Moduls
+  // Funktion zum Umschalten eines spezifischen Moduls, memoisiert mit useCallback
   const toggleModule = useCallback((module) => {
-    console.log(`Toggling module: ${module}`);
     dispatch({ type: TOGGLE_MODULE, module });
+    console.log(`Modul umgeschaltet: ${module}`);
   }, [dispatch]);
 
-  // Ausgabe des aktuellen Zustands zur Debugging-Zwecken
-  console.log('Current state:', state);
-
-  // Rückgabe des Zustands und der Umschaltfunktionen für die Verwendung in Komponenten
+  // Zustand und Funktionen als Rückgabewerte für den Hook
   return {
     state,           // Der aktuelle Zustand des AdminPanels
     toggleKioskMode, // Funktion zum Umschalten des Kiosk-Modus

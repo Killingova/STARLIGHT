@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AdminPanelProvider } from './contexts/AdminPanelContext';
 import { ProgressBarProvider } from './contexts/ProgressBarContext';
@@ -18,39 +18,38 @@ import AdminAuthPage from './pages/AdminAuthPage';
 import PrivateRoute from './components/PrivateRoute';
 import ErrorPage from './pages/ErrorPage';
 
-// Layout-Funktion, verwendet React-Fragment und Child-Komponenten
-function Layout() {
-  return (
-    <>
-      <Navbar />
+// Layout-Komponente mit React-Fragment und Verwendung von Children
+const Layout = ({ children }) => (
+  <div className="min-h-screen flex flex-col bg-gray-50">
+    <Navbar />
+    <div className="flex-grow container mx-auto p-4">
       <Progressbar />
-      <main>
-        <Routes>
-          <Route path="/" element={<StartPage />} />
-          <Route path="/qr-code-scan" element={<QRCodeScanPage />} />
-          <Route path="/egk-verification" element={<EGKVerificationPage />} />
-          <Route path="/form" element={<FormPage />} />
-          <Route path="/complete" element={<ProcessCompletePage />} />
-          <Route path="/admin" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
-          <Route path="/admin-login" element={<AdminAuthPage />} />
-          <Route path="*" element={<ErrorPage />} />
-        </Routes>
-      </main>
-      <Footer />
-    </>
-  );
-}
+      <main className="mt-6">{children}</main>
+    </div>
+    <Footer />
+  </div>
+);
 
-// Hauptfunktion App, verwendet Funktionen für Zustand und Kontextmanagement
+// Hauptkomponente App, verwendet alle Provider für Zustand und Kontextmanagement
 function App() {
-  // Hier wird das Zustandssystem mit verschiedenen Providern aufgebaut
   return (
     <ThemeProvider>
       <LanguageProvider>
         <ProgressBarProvider>
           <AdminPanelProvider>
             <Router>
-              <Layout />
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<StartPage />} />
+                  <Route path="/qr-code-scan" element={<QRCodeScanPage />} />
+                  <Route path="/egk-verification" element={<EGKVerificationPage />} />
+                  <Route path="/form" element={<FormPage />} />
+                  <Route path="/complete" element={<ProcessCompletePage />} />
+                  <Route path="/admin" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
+                  <Route path="/admin-login" element={<AdminAuthPage />} />
+                  <Route path="*" element={<ErrorPage />} />
+                </Routes>
+              </Layout>
             </Router>
           </AdminPanelProvider>
         </ProgressBarProvider>

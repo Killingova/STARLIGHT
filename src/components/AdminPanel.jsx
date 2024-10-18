@@ -13,7 +13,6 @@ function AdminPanel() {
 
   // Speichert die Einstellungen und navigiert zur Startseite
   const saveSettings = useCallback(() => {
-    console.log('Einstellungen speichern...');
     const settings = {
       isKioskModeEnabled: state.isKioskModeEnabled,
       selectedModules: state.selectedModules,
@@ -37,34 +36,38 @@ function AdminPanel() {
   }, [toggleModule]);
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl mb-4">Admin Panel</h2>
-      <label className="mb-4 block">
-        <input 
-          type="checkbox" 
-          checked={state.isKioskModeEnabled} 
-          onChange={handleToggleKioskMode} 
-        />
-        <span className="ml-2">Kiosk-Modus aktivieren</span>
-      </label>
-      <h3 className="text-xl mb-4">Module</h3>
-      {Object.keys(state.selectedModules).map((module) => (
-        <label key={module} className="block mb-2">
+    <>
+      <div className="p-6">
+        <h2 className="text-2xl mb-4">Admin Panel</h2>
+        <label className="mb-4 block">
           <input 
             type="checkbox" 
-            checked={state.selectedModules[module]} 
-            onChange={() => handleToggleModule(module)} 
+            checked={state.isKioskModeEnabled} 
+            onChange={handleToggleKioskMode} 
           />
-          <span className="ml-2 capitalize">{module}</span>
+          <span className="ml-2">Kiosk-Modus aktivieren</span>
         </label>
-      ))}
-      <button 
-        onClick={saveSettings} 
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Einstellungen speichern
-      </button>
-    </div>
+
+        <h3 className="text-xl mb-4">Module</h3>
+        {Object.keys(state.selectedModules).map((module) => (
+          <label key={module} className="block mb-2">
+            <input 
+              type="checkbox" 
+              checked={state.selectedModules[module]} 
+              onChange={() => handleToggleModule(module)} 
+            />
+            <span className="ml-2 capitalize">{module}</span>
+          </label>
+        ))}
+
+        <button 
+          onClick={saveSettings} 
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Einstellungen speichern
+        </button>
+      </div>
+    </>
   );
 }
 

@@ -1,6 +1,29 @@
-// src/components/Forms/AnamneseForm.jsx
 import React from 'react';
 import useFormValidation from '../../hooks/useFormValidation.jsx';
+
+// Wiederverwendbare FormField-Komponente
+const FormField = ({ label, name, value, onChange, error, type = 'text', isTextArea = false }) => (
+  <div className="mb-4">
+    <label className="block text-gray-700">{label}:</label>
+    {isTextArea ? (
+      <textarea
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="w-full px-3 py-2 border rounded-md"
+      />
+    ) : (
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="w-full px-3 py-2 border rounded-md"
+      />
+    )}
+    {error && <p className="text-red-500">{error}</p>}
+  </div>
+);
 
 const AnamneseForm = () => {
   const { formValues, errors, handleChange, validate } = useFormValidation({
@@ -18,54 +41,44 @@ const AnamneseForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6">
-      <h2 className="text-xl font-semibold mb-4">Anamnese</h2>
-      
-      {/* Eingabefeld für Allergien */}
-      <div className="mb-4">
-        <label className="block text-gray-700">Allergien:</label>
-        <input
-          type="text"
+    <>
+      <form onSubmit={handleSubmit} className="mb-6">
+        <h2 className="text-xl font-semibold mb-4">Anamnese</h2>
+
+        {/* Wiederverwendbare FormField-Komponenten */}
+        <FormField
+          label="Allergien"
           name="allergies"
           value={formValues.allergies}
           onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-md"
+          error={errors.allergies}
         />
-        {errors.allergies && <p className="text-red-500">{errors.allergies}</p>}
-      </div>
 
-      {/* Eingabefeld für Medikamente */}
-      <div className="mb-4">
-        <label className="block text-gray-700">Medikamente:</label>
-        <input
-          type="text"
+        <FormField
+          label="Medikamente"
           name="medication"
           value={formValues.medication}
           onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-md"
+          error={errors.medication}
         />
-        {errors.medication && <p className="text-red-500">{errors.medication}</p>}
-      </div>
 
-      {/* Eingabefeld für Vorerkrankungen */}
-      <div className="mb-4">
-        <label className="block text-gray-700">Vorerkrankungen:</label>
-        <textarea
+        <FormField
+          label="Vorerkrankungen"
           name="medicalHistory"
           value={formValues.medicalHistory}
           onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-md"
+          error={errors.medicalHistory}
+          isTextArea={true}  // TextArea für längeren Text
         />
-        {errors.medicalHistory && <p className="text-red-500">{errors.medicalHistory}</p>}
-      </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-      >
-        Absenden
-      </button>
-    </form>
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+        >
+          Absenden
+        </button>
+      </form>
+    </>
   );
 };
 

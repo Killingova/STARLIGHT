@@ -1,35 +1,18 @@
-// src/hooks/useFullscreen.jsx
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 
-const useFullscreen = (ref) => {
-  // Funktion, um den Vollbildmodus anzufordern
-  const requestFullscreen = () => {
-    if (ref.current) {
-      if (ref.current.requestFullscreen) {
-        ref.current.requestFullscreen();
-      } else if (ref.current.mozRequestFullScreen) {
-        ref.current.mozRequestFullScreen();
-      } else if (ref.current.webkitRequestFullscreen) {
-        ref.current.webkitRequestFullscreen();
-      } else if (ref.current.msRequestFullscreen) {
-        ref.current.msRequestFullscreen();
-      }
+// Custom Hook für den Vollbildmodus
+const useFullscreen = (element) => {
+  const requestFullscreen = useCallback(() => {
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) { // Firefox
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) { // Chrome, Safari, Opera
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) { // IE/Edge
+      element.msRequestFullscreen();
     }
-  };
-
-  // Funktion, um den Vollbildmodus zu verlassen
-  const exitFullscreen = () => {
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    }
-  };
-
-  useEffect(() => {
-    // Aufräumarbeiten, wenn der Komponent abgebaut wird
-    return () => {
-      exitFullscreen();
-    };
-  }, []);
+  }, [element]);
 
   return { requestFullscreen };
 };

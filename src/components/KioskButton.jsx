@@ -1,22 +1,19 @@
-// src/components/KioskButton.jsx
-import React, { useRef } from 'react';
+import React from 'react';
 import useFullscreen from '../hooks/useFullscreen';
 
 const KioskButton = () => {
-  const containerRef = useRef(null); // Referenz auf das HTML-Element, das in den Vollbildmodus versetzt wird
-  const { requestFullscreen } = useFullscreen(containerRef);
+  // Verwende das ganze Dokument, um den Vollbildmodus für die gesamte Seite zu aktivieren
+  const { requestFullscreen } = useFullscreen(document.documentElement);
 
   const handleKioskMode = () => {
-    requestFullscreen(); // Aktiviere Vollbildmodus
+    requestFullscreen(); // Aktiviere den Vollbildmodus für das gesamte Fenster
     // Weitere Einstellungen für den Kiosk-Modus (falls benötigt)
   };
 
   return (
-    <div ref={containerRef}>
-      <button onClick={handleKioskMode} className="bg-blue-600 text-white p-2 rounded">
-        Kiosk-Modus aktivieren
-      </button>
-    </div>
+    <button onClick={handleKioskMode} className="bg-blue-600 text-white p-2 rounded">
+      Kiosk-Modus aktivieren
+    </button>
   );
 };
 

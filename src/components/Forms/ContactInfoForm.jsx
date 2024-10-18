@@ -1,6 +1,20 @@
-// src/components/Forms/ContactInfoForm.jsx
 import React from 'react';
 import useFormValidation from '../../hooks/useFormValidation.jsx';
+
+// Wiederverwendbare FormField-Komponente
+const FormField = ({ label, name, value, onChange, error, type = 'text' }) => (
+  <div className="mb-4">
+    <label className="block text-gray-700">{label}:</label>
+    <input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="w-full px-3 py-2 border rounded-md"
+    />
+    {error && <p className="text-red-500">{error}</p>}
+  </div>
+);
 
 const ContactInfoForm = () => {
   const { formValues, errors, handleChange, validate } = useFormValidation({
@@ -18,55 +32,45 @@ const ContactInfoForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6">
-      <h2 className="text-xl font-semibold mb-4">Kontaktinformationen</h2>
-      
-      {/* Eingabefeld für Name */}
-      <div className="mb-4">
-        <label className="block text-gray-700">Name:</label>
-        <input
-          type="text"
+    <>
+      <form onSubmit={handleSubmit} className="mb-6">
+        <h2 className="text-xl font-semibold mb-4">Kontaktinformationen</h2>
+
+        {/* Wiederverwendbare FormField-Komponenten */}
+        <FormField
+          label="Name"
           name="name"
           value={formValues.name}
           onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-md"
+          error={errors.name}
         />
-        {errors.name && <p className="text-red-500">{errors.name}</p>}
-      </div>
 
-      {/* Eingabefeld für E-Mail */}
-      <div className="mb-4">
-        <label className="block text-gray-700">E-Mail:</label>
-        <input
-          type="email"
+        <FormField
+          label="E-Mail"
           name="email"
           value={formValues.email}
           onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-md"
+          error={errors.email}
+          type="email"
         />
-        {errors.email && <p className="text-red-500">{errors.email}</p>}
-      </div>
 
-      {/* Eingabefeld für Telefonnummer */}
-      <div className="mb-4">
-        <label className="block text-gray-700">Telefonnummer:</label>
-        <input
-          type="tel"
+        <FormField
+          label="Telefonnummer"
           name="phone"
           value={formValues.phone}
           onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-md"
+          error={errors.phone}
+          type="tel"
         />
-        {errors.phone && <p className="text-red-500">{errors.phone}</p>}
-      </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-      >
-        Absenden
-      </button>
-    </form>
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+        >
+          Absenden
+        </button>
+      </form>
+    </>
   );
 };
 
