@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAdminPanel from '../hooks/useAdminPanel';
 
-const AdminPanel = () => {
+function AdminPanel() {
   const { state, toggleKioskMode, toggleModule } = useAdminPanel();
   const navigate = useNavigate();
 
@@ -25,16 +25,16 @@ const AdminPanel = () => {
   }, [state, navigate]);
 
   // Handler für das Umschalten des Kiosk-Modus
-  const handleToggleKioskMode = () => {
+  const handleToggleKioskMode = useCallback(() => {
     toggleKioskMode();
     console.log('Kiosk-Modus umgeschaltet:', state.isKioskModeEnabled);
-  };
+  }, [toggleKioskMode, state.isKioskModeEnabled]);
 
   // Handler für das Umschalten der Module
-  const handleToggleModule = (module) => {
+  const handleToggleModule = useCallback((module) => {
     toggleModule(module);
     console.log(`Modul umgeschaltet: ${module}`);
-  };
+  }, [toggleModule]);
 
   return (
     <div className="p-6">
@@ -66,6 +66,6 @@ const AdminPanel = () => {
       </button>
     </div>
   );
-};
+}
 
 export default AdminPanel;

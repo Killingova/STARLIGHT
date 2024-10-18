@@ -1,8 +1,6 @@
-// src/components/Notification.jsx
-
 import React from 'react';
 
-const Notification = ({ title, message, icon: Icon, iconColor = 'blue', actionButton }) => {
+function Notification({ title, message, icon: Icon, iconColor = 'blue', actionButton, children }) {
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full mx-auto border border-gray-200">
       {/* Header-Bereich mit Titel und optionalem Icon */}
@@ -21,6 +19,13 @@ const Notification = ({ title, message, icon: Icon, iconColor = 'blue', actionBu
         {message}
       </div>
 
+      {/* Kinder-Komponenten für zusätzliche Inhalte */}
+      {children && (
+        <div className="mt-4">
+          {children}
+        </div>
+      )}
+
       {/* Action-Button (optional) */}
       {actionButton && (
         <div className="mt-6 flex justify-center">
@@ -29,6 +34,6 @@ const Notification = ({ title, message, icon: Icon, iconColor = 'blue', actionBu
       )}
     </div>
   );
-};
+}
 
 export default Notification;

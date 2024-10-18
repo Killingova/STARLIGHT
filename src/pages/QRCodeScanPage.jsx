@@ -17,27 +17,25 @@ const QRCodeScanPage = () => {
   }, [updateProgress]);
 
   return (
-    <>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-        <h2 className="text-2xl font-bold mb-4">QR-Code scannen</h2>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <h2 className="text-2xl font-bold mb-4">QR-Code scannen</h2>
 
-        <ProgressBar />
+      <ProgressBar />
 
-        <CameraComponent onScan={handleScan} setError={setError} />
+      <CameraComponent onScan={handleScan} setError={setError} />
 
-        {error && (
-          <p className="text-red-500 mt-2">Fehler: {error.message}</p>
-        )}
+      {error && (
+        <p className="text-red-500 mt-2">Fehler: {error.message}</p>
+      )}
 
-        {showNotification && scanResult && (
-          <Notification
-            title="Scan erfolgreich"
-            message={`QR-Code Daten: ${scanResult}`}
-            iconColor="green"
-          />
-        )}
-      </div>
-    </>
+      {showNotification && scanResult && (
+        <Notification
+          title="Scan erfolgreich"
+          message={`QR-Code Daten: ${scanResult}`}
+          iconColor="green"
+        />
+      )}
+    </div>
   );
 };
 

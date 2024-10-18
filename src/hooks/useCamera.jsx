@@ -1,67 +1,72 @@
-// src/hooks/useCamera.js
 import { useCallback, useRef, useEffect } from 'react';
-import { BrowserMultiFormatReader } from '@zxing/library';
+import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
 
-export const useCamera = (videoRef, onScan, setError) => {
-  console.log('useCamera hook initialized');
-
+export function useCamera({ videoRef, onScan, setError }) {
+  // Referenz für den Barcode-Reader
   const codeReaderRef = useRef(null);
 
+  // Effekt, der beim Mounten und Unmounten der Komponente ausgeführt wird
   useEffect(() => {
-    console.log('useCamera effect running');
+    console.log('useCamera-Effekt wird ausgeführt');
     return () => {
-      console.log('useCamera effect cleaning up');
+      console.log('useCamera-Effekt wird bereinigt');
+      // Barcode-Reader zurücksetzen, wenn die Komponente unmountet wird
       if (codeReaderRef.current) {
         codeReaderRef.current.reset();
       }
     };
   }, []);
 
+  // Funktion zum Starten der Kamera
   const startCamera = useCallback(async () => {
-    console.log('Starting camera...');
-
+    console.log('Kamera wird gestartet...');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      console.log('Camera stream obtained');
+      console.log('Kamerastream erhalten');
+      // Video-Element mit dem Kamerastream verbinden
       videoRef.current.srcObject = stream;
 
+      // Initialisierung des Barcode-Readers, falls noch nicht geschehen
       if (!codeReaderRef.current) {
-        console.log('Initializing BrowserMultiFormatReader');
+        console.log('BrowserMultiFormatReader wird initialisiert');
         codeReaderRef.current = new BrowserMultiFormatReader();
       }
 
-      console.log('Starting decoding from video device');
+      // Starten des Decodierens vom Videogerät
+      console.log('Decodierung vom Videogerät wird gestartet');
       codeReaderRef.current.decodeFromVideoDevice(null, videoRef.current, (result, error) => {
         if (result) {
-          console.log('Scan result:', result.text);
-          onScan(result.text);
+          console.log('Scan-Ergebnis:', result.text);
+          onScan(result.text); // Ergebnis des Scans weitergeben
         }
-        if (error && error.name !== 'NotFoundException') {
-          console.error('Scan error:', error);
-          setError(error);
+        if (error && !(error instanceof NotFoundException)) {
+          // Bei anderen Fehlern als "Not Found"
+          console.error('Scan-Fehler:', error);
+          setError(error); // Fehler weitergeben
         }
       });
 
-      console.log('Camera started successfully');
+      console.log('Kamera erfolgreich gestartet');
     } catch (err) {
-      console.error('Error starting camera:', err);
-      setError(err);
+      console.error('Fehler beim Starten der Kamera:', err);
+      setError(err); // Fehler weitergeben
     }
   }, [videoRef, onScan, setError]);
 
+  // Funktion zum Stoppen der Kamera
   const stopCamera = useCallback(() => {
-    console.log('Stopping camera...');
+    console.log('Kamera wird gestoppt...');
     const stream = videoRef.current?.srcObject;
     if (stream) {
-      console.log('Stopping all tracks');
+      console.log('Alle Tracks werden gestoppt');
       stream.getTracks().forEach(track => track.stop());
     }
     if (codeReaderRef.current) {
-      console.log('Resetting code reader');
+      console.log('Barcode-Reader wird zurückgesetzt');
       codeReaderRef.current.reset();
     }
-    console.log('Camera stopped');
+    console.log('Kamera gestoppt');
   }, [videoRef]);
 
   return { startCamera, stopCamera };
-};
+}
