@@ -1,54 +1,49 @@
 // src/pages/EGKVerificationPage.jsx
 
 import React, { useState, useContext } from 'react';
-import CardReaderComponent from '../components/CardReaderComponent'; // Komponente für das Einlesen der eGK
-import Notification from '../components/Notification'; // Benachrichtigungs-Komponente
-import ProgressBar from '../components/Progressbar'; // Fortschrittsbalken-Komponente
-import { ProgressBarContext } from '../contexts/ProgressBarContext'; // ProgressBar-Kontext für die Fortschrittskontrolle
+import CardReaderComponent from '../components/CardReaderComponent'; // Component for reading eGK
+import Notification from '../components/Notification'; // Notification component
+import ProgressBar from '../components/Progressbar'; // Progress bar component
+import { ProgressBarContext } from '../contexts/ProgressBarContext'; // ProgressBar context for progress control
 
 const EGKVerificationPage = () => {
-  const [cardData, setCardData] = useState(null); // Zustand für die Daten der eGK
-  const [showNotification, setShowNotification] = useState(false); // Kontrolle für Benachrichtigungsanzeige
-  const { setCurrentStep } = useContext(ProgressBarContext); // Zugriff auf den ProgressBar-Kontext
+  const [cardData, setCardData] = useState(null); // State for eGK data
+  const [showNotification, setShowNotification] = useState(false); // Control for notification display
+  const { setCurrentStep } = useContext(ProgressBarContext); // Access to ProgressBar context
 
-  // Callback-Funktion, die aufgerufen wird, wenn die eGK erfolgreich eingelesen wird
+  // Callback function called when eGK is successfully read
   const handleCardRead = (data) => {
     setCardData(data);
     setShowNotification(true);
-    setCurrentStep(3); // Fortschritt aktualisieren (z.B. Schritt "Verifizierung abgeschlossen")
-    console.log('eGK Daten:', data); // Debugging oder Weiterverarbeitung der eGK-Daten
+    setCurrentStep(3); // Update progress (e.g., step "Verification completed")
+    console.log('eGK Data:', data); // Debugging or further processing of eGK data
   };
 
-  // Automatisches Ausblenden der Benachrichtigung nach einer bestimmten Zeit
+  // Automatically hide the notification after a certain time
   useEffect(() => {
     if (showNotification) {
-      const timer = setTimeout(() => setShowNotification(false), 5000); // 5 Sekunden Verzögerung
+      const timer = setTimeout(() => setShowNotification(false), 5000); // 5 second delay
       return () => clearTimeout(timer);
     }
   }, [showNotification]);
 
   return (
-    <div className="egk-verification-page flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      {/* Überschrift */}
-      <h2 className="text-center text-2xl font-bold mb-6">eGK Verifikation</h2>
+    <div>
+      {/* Title */}
+      <h2>eGK Verification</h2>
 
-      {/* Fortschrittsleiste */}
-      <div className="w-full max-w-md mb-6">
-        <ProgressBar />
-      </div>
+      {/* Progress Bar */}
+      <ProgressBar />
 
-      {/* eGK-Lesegerät-Komponente */}
-      <div className="w-full max-w-md">
-        <CardReaderComponent onCardRead={handleCardRead} />
-      </div>
+      {/* eGK Reader Component */}
+      <CardReaderComponent onCardRead={handleCardRead} />
 
-      {/* Benachrichtigung bei erfolgreichem Einlesen der Karte */}
+      {/* Notification when card is successfully read */}
       {showNotification && cardData && (
-        <div className="mt-6">
+        <div>
           <Notification
-            title="eGK erfolgreich eingelesen"
-            message={`Kartendaten: ${JSON.stringify(cardData)}`}
-            iconColor="green" // Erfolgsfarbe
+            title="eGK Successfully Read"
+            message={`Card Data: ${JSON.stringify(cardData)}`}
           />
         </div>
       )}

@@ -18,19 +18,19 @@ import AdminAuthPage from './pages/AdminAuthPage';
 import PrivateRoute from './components/PrivateRoute';
 import ErrorPage from './pages/ErrorPage';
 
-// Layout-Komponente mit React-Fragment und Verwendung von Children
+// Layout component using React.Fragment and Children
 const Layout = ({ children }) => (
-  <div className="min-h-screen flex flex-col bg-gray-50">
+  <div>
     <Navbar />
-    <div className="flex-grow container mx-auto p-4">
+    <div>
       <Progressbar />
-      <main className="mt-6">{children}</main>
+      <main>{children}</main>
     </div>
     <Footer />
   </div>
 );
 
-// Hauptkomponente App, verwendet alle Provider für Zustand und Kontextmanagement
+// Main App component using all providers for state and context management
 function App() {
   return (
     <ThemeProvider>

@@ -1,0 +1,10 @@
+.buttonBar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .button {
+    padding: 0.5rem;
+    border: none;
+  }

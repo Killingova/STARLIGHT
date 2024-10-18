@@ -63,9 +63,7 @@ function AdminAuthPage() {
           <InputField label="Server IP-Adresse" type="text" value={ipAddress} onChange={handleIpChange} />
           <InputField label="Benutzername" type="text" value={username} onChange={handleUsernameChange} />
           <InputField label="Passwort" type="password" value={password} onChange={handlePasswordChange} />
-          <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-            Anmelden
-          </button>
+          <button type="submit">Anmelden</button>
         </form>
       </div>
     </div>
@@ -76,10 +74,9 @@ function AdminAuthPage() {
 function InputField({ label, type, value, onChange }) {
   return (
     <>
-      <label className="block text-gray-700 mb-2">{label}</label>
+      <label>{label}</label>
       <input
         type={type}
-        className="w-full p-2 border rounded"
         value={value}
         onChange={onChange}
       />
