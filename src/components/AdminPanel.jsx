@@ -3,72 +3,73 @@ import { useNavigate } from 'react-router-dom';
 import useAdminPanel from '../hooks/useAdminPanel';
 
 function AdminPanel() {
-  const { state, toggleKioskMode, toggleModule } = useAdminPanel();
-  const navigate = useNavigate();
+    const { state, toggleKioskMode, toggleModule } = useAdminPanel();
+    const navigate = useNavigate();
 
-  // Überwacht den Zustand des Admin-Panels und gibt ihn bei Änderungen aus
-  useEffect(() => {
-    console.log('Aktueller AdminPanel Zustand:', state);
-  }, [state]);
+    const saveSettings = useCallback(() => {
+        const settings = {
+            isKioskModeEnabled: state.isKioskModeEnabled,
+            selectedModules: state.selectedModules,
+        };
+        localStorage.setItem('adminPanelSettings', JSON.stringify(settings));
+        console.log('Einstellungen erfolgreich gespeichert:', settings);
+        alert('Einstellungen erfolgreich gespeichert!');
+        navigate('/');
+    }, [state, navigate]);
 
-  // Speichert die Einstellungen und navigiert zur Startseite
-  const saveSettings = useCallback(() => {
-    const settings = {
-      isKioskModeEnabled: state.isKioskModeEnabled,
-      selectedModules: state.selectedModules,
+    const handleToggleKioskMode = () => {
+        toggleKioskMode();
+        console.log('Kiosk-Modus umgeschaltet:', state.isKioskModeEnabled);
     };
-    localStorage.setItem('adminPanelSettings', JSON.stringify(settings));
-    console.log('Einstellungen erfolgreich gespeichert:', settings);
-    alert('Einstellungen erfolgreich gespeichert!');
-    navigate('/');
-  }, [state, navigate]);
 
-  // Handler für das Umschalten des Kiosk-Modus
-  const handleToggleKioskMode = useCallback(() => {
-    toggleKioskMode();
-    console.log('Kiosk-Modus umgeschaltet:', state.isKioskModeEnabled);
-  }, [toggleKioskMode, state.isKioskModeEnabled]);
+    const handleToggleModule = (module) => {
+        toggleModule(module);
+        console.log(`Modul umgeschaltet: ${module}`);
+    };
 
-  // Handler für das Umschalten der Module
-  const handleToggleModule = useCallback((module) => {
-    toggleModule(module);
-    console.log(`Modul umgeschaltet: ${module}`);
-  }, [toggleModule]);
+    useEffect(() => {
+        console.log('Aktueller AdminPanel Zustand:', state);
+    }, [state]);
 
-  return (
-    <>
-      <div className="p-6">
-        <h2 className="text-2xl mb-4">Admin Panel</h2>
-        <label className="mb-4 block">
-          <input 
-            type="checkbox" 
-            checked={state.isKioskModeEnabled} 
-            onChange={handleToggleKioskMode} 
-          />
-          <span className="ml-2">Kiosk-Modus aktivieren</span>
-        </label>
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+                <h2 className="text-3xl font-bold mb-4 text-center">Admin Panel</h2>
 
-        <h3 className="text-xl mb-4">Module</h3>
-        {Object.keys(state.selectedModules).map((module) => (
-          <label key={module} className="block mb-2">
-            <input 
-              type="checkbox" 
-              checked={state.selectedModules[module]} 
-              onChange={() => handleToggleModule(module)} 
-            />
-            <span className="ml-2 capitalize">{module}</span>
-          </label>
-        ))}
+                <div className="mb-4">
+                    <label className="flex items-center">
+                        <input
+                            type="checkbox"
+                            checked={state.isKioskModeEnabled}
+                            onChange={handleToggleKioskMode}
+                            className="mr-2"
+                        />
+                        <span className="text-lg">Kiosk-Modus aktivieren</span>
+                    </label>
+                </div>
 
-        <button 
-          onClick={saveSettings} 
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Einstellungen speichern
-        </button>
-      </div>
-    </>
-  );
+                <h3 className="text-xl font-semibold mb-4">Module</h3>
+                {Object.keys(state.selectedModules).map((module) => (
+                    <label key={module} className="block mb-2">
+                        <input
+                            type="checkbox"
+                            checked={state.selectedModules[module]}
+                            onChange={() => handleToggleModule(module)}
+                            className="mr-2"
+                        />
+                        <span className="capitalize">{module}</span>
+                    </label>
+                ))}
+
+                <button
+                    onClick={saveSettings}
+                    className="bg-blue-600 text-white px-4 py-2 rounded w-full mt-6 hover:bg-blue-700 transition-colors duration-300"
+                >
+                    Einstellungen speichern
+                </button>
+            </div>
+        </div>
+    );
 }
 
 export default AdminPanel;

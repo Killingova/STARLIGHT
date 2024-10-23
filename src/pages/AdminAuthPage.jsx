@@ -55,15 +55,20 @@ function AdminAuthPage() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
-        <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
-        {error && <p className="text-red-600 mb-4">{error}</p>}
-        <form onSubmit={handleLogin}>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+      <div className="bg-white p-10 rounded-xl shadow-lg max-w-md w-full">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Admin Login</h2>
+        {error && <p className="text-red-600 mb-4 text-center">{error}</p>}
+        <form onSubmit={handleLogin} className="space-y-6">
           <InputField label="Server IP-Adresse" type="text" value={ipAddress} onChange={handleIpChange} />
           <InputField label="Benutzername" type="text" value={username} onChange={handleUsernameChange} />
           <InputField label="Passwort" type="password" value={password} onChange={handlePasswordChange} />
-          <button type="submit">Anmelden</button>
+          <button 
+            type="submit" 
+            className="w-full py-3 mt-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300"
+          >
+            Anmelden
+          </button>
         </form>
       </div>
     </div>
@@ -73,14 +78,15 @@ function AdminAuthPage() {
 // Wiederverwendbare Eingabekomponente mit generischen Funktionen
 function InputField({ label, type, value, onChange }) {
   return (
-    <>
-      <label>{label}</label>
+    <div className="flex flex-col mb-4">
+      <label className="mb-2 text-gray-700 font-medium">{label}</label>
       <input
         type={type}
         value={value}
         onChange={onChange}
+        className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-    </>
+    </div>
   );
 }
 
