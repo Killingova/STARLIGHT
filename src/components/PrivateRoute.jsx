@@ -1,22 +1,21 @@
-import React, { useMemo } from 'react';
-import { Navigate } from 'react-router-dom';
+// src/components/PrivateRoute.jsx
 
-// PrivateRoute-Komponente
-function PrivateRoute({ children, redirectPath = '/admin-login', errorMessage = null }) {
-  // Memoization des Authentifizierungsstatus aus sessionStorage
-  const isAuthenticated = useMemo(() => Boolean(sessionStorage.getItem('isAuthenticated')), []);
+import React, { useContext } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { FlowContext } from '../contexts/FlowContext';
 
-  // Bedingte Rückgabe basierend auf der Authentifizierung
+const PrivateRoute = ({ children, redirectPath = '/admin-login', errorMessage = null }) => {
+  const location = useLocation();
+  const { isAuthenticated } = useContext(FlowContext);
+
   if (!isAuthenticated) {
-    // Zeigt eine Fehlermeldung an, falls angegeben
     if (errorMessage) {
-      alert(errorMessage);
+      alert(errorMessage); // Zeigt eine Fehlermeldung an, falls übergeben
     }
-    return <Navigate to={redirectPath} />; // Leitet zu einer anderen Route weiter
+    return <Navigate to={redirectPath} state={{ from: location }} />;
   }
 
-  // Rückgabe der Kindkomponenten bei Authentifizierung
-  return children;
-}
+  return <>{children}</>; // Gibt die geschützten Kinderkomponenten zurück, falls authentifiziert
+};
 
 export default PrivateRoute;

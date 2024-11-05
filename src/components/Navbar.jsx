@@ -1,45 +1,57 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu } from 'lucide-react';
-import { AdminPanelContext } from '../contexts/AdminPanelContext';
-import { ThemeContext } from '../contexts/ThemeContext';
-import { LanguageContext } from '../contexts/LanguageContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, LogOut, Home, Lock, Unlock } from 'lucide-react';
+import { FlowContext } from '../contexts/FlowContext';
 
 const Navbar = () => {
-  const { isKioskModeEnabled } = useContext(AdminPanelContext);
-  const { theme, setTheme } = useContext(ThemeContext);
-  const { language, setLanguage } = useContext(LanguageContext);
-
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
-
-  const toggleLanguage = () => {
-    setLanguage((prevLanguage) => (prevLanguage === 'de' ? 'en' : 'de'));
-  };
+  const { isKioskModeActive, isAuthenticated, logout } = useContext(FlowContext);
+  const navigate = useNavigate();
 
   return (
     <nav className="bg-blue-600 p-4 flex justify-between items-center shadow-md">
-      <div className="text-white text-xl font-semibold">
-        <Link to="/">Quincy Check-In</Link>
+      {/* Logo und Startseiten-Link */}
+      <div className="flex items-center space-x-3">
+        <Link to="/" className="text-white text-xl font-semibold flex items-center space-x-1">
+          <Home size={24} />
+          <span>Quincy Check-In</span>
+        </Link>
       </div>
+
+      {/* Dynamische Navigationslinks */}
       <div className="flex items-center space-x-4">
-        <button
-          onClick={toggleTheme}
-          className="text-white bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-md"
-        >
-          {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-        </button>
-        <button
-          onClick={toggleLanguage}
-          className="text-white bg-blue-800 hover:bg-blue-700 px-4 py-2 rounded-md"
-        >
-          {language === 'de' ? 'Switch to English' : 'Wechseln zu Deutsch'}
-        </button>
-        {!isKioskModeEnabled && (
-          <Link to="/admin" className="text-white">
-            <Menu size={32} />
+        {/* Kiosk-Modus-Anzeige */}
+        <div className="text-sm text-white mr-4">
+          {isKioskModeActive ? (
+            <span className="flex items-center">
+              <Lock size={18} className="mr-1" /> Kiosk-Modus aktiv
+            </span>
+          ) : (
+            <span className="flex items-center">
+              <Unlock size={18} className="mr-1" /> Admin-Modus
+            </span>
+          )}
+        </div>
+
+        {/* Admin-Link nur im Admin-Modus */}
+        {!isKioskModeActive && (
+          <Link to="/admin" className="text-white flex items-center">
+            <Menu size={28} className="mr-1" />
+            <span>Admin</span>
           </Link>
+        )}
+
+        {/* Authentifizierte Ansicht: Logout-Button */}
+        {isAuthenticated && (
+          <button
+            onClick={() => {
+              logout();
+              navigate('/');
+            }}
+            className="text-white flex items-center hover:text-gray-300 transition-colors"
+          >
+            <LogOut size={24} className="mr-1" />
+            <span>Abmelden</span>
+          </button>
         )}
       </div>
     </nav>

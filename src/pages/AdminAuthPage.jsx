@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+// src/pages/AdminAuthPage.jsx
+
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAdminPanel from '../hooks/useAdminPanel';
+import { FlowContext } from '../contexts/FlowContext';
+import { AdminPanelContext } from '../contexts/AdminPanelContext'; // Importiere AdminPanelContext, falls benötigt
 
 // Funktion zur Verwaltung des Formularzustands, übergibt Funktionen als Werte
 function useInputState(initialValue) {
@@ -11,6 +14,21 @@ function useInputState(initialValue) {
   return [value, handleChange];
 }
 
+// Wiederverwendbare Eingabekomponente mit generischen Funktionen
+function InputField({ label, type, value, onChange }) {
+  return (
+    <div className="flex flex-col mb-4">
+      <label className="mb-2 text-gray-700 font-medium">{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+  );
+}
+
 // AdminAuthPage Komponente als Funktion
 function AdminAuthPage() {
   const [ipAddress, handleIpChange] = useInputState('');
@@ -18,14 +36,15 @@ function AdminAuthPage() {
   const [password, handlePasswordChange] = useInputState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { state, dispatch } = useAdminPanel();
+  const { login, isAuthenticated } = useContext(FlowContext);
+  const { state, dispatch } = useContext(AdminPanelContext); // Verwende den AdminPanelContext, falls benötigt
 
   // Effekt zur Prüfung, ob der Benutzer bereits authentifiziert ist
   useEffect(function () {
-    if (sessionStorage.getItem('isAuthenticated') === 'true') {
+    if (isAuthenticated || sessionStorage.getItem('isAuthenticated') === 'true') {
       navigate('/admin');
     }
-  }, [navigate]);
+  }, [navigate, isAuthenticated]);
 
   // Funktion zur Validierung der IP-Adresse
   function validateIpAddress(ip) {
@@ -45,11 +64,14 @@ function AdminAuthPage() {
 
     if (existingCredentials && existingCredentials.username === username && existingCredentials.password === password) {
       sessionStorage.setItem('isAuthenticated', 'true');
+      login(); // Aktualisiere den Authentifizierungszustand im FlowContext
       navigate('/admin');
     } else {
+      // Neue Anmeldeinformationen speichern und authentifizieren
       localStorage.setItem('adminCredentials', JSON.stringify({ username, password }));
       localStorage.setItem('serverIp', ipAddress);
       sessionStorage.setItem('isAuthenticated', 'true');
+      login(); // Aktualisiere den Authentifizierungszustand im FlowContext
       navigate('/admin');
     }
   }
@@ -71,21 +93,6 @@ function AdminAuthPage() {
           </button>
         </form>
       </div>
-    </div>
-  );
-}
-
-// Wiederverwendbare Eingabekomponente mit generischen Funktionen
-function InputField({ label, type, value, onChange }) {
-  return (
-    <div className="flex flex-col mb-4">
-      <label className="mb-2 text-gray-700 font-medium">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
     </div>
   );
 }

@@ -1,60 +1,53 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AdminPanelProvider } from './contexts/AdminPanelContext';
+import { Routes, Route } from 'react-router-dom';
+
+// Importiere die Provider für die Kontexte
+import { FlowProvider } from './contexts/FlowContext';
 import { ProgressBarProvider } from './contexts/ProgressBarContext';
-import { ThemeProvider } from './contexts/ThemeContext';
-import { LanguageProvider } from './contexts/LanguageContext';
+import { AdminPanelProvider } from './contexts/AdminPanelContext';
 
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import Progressbar from './components/Progressbar';
+// Importiere die Layouts und Seiten
+import Layout from './components/Layout';
 import StartPage from './pages/StartPage';
-import QRCodeScanPage from './pages/QRCodeScanPage';
-import EGKVerificationPage from './pages/EGKVerificationPage';
-import FormPage from './pages/FormPage';
-import ProcessCompletePage from './pages/ProcessCompletePage';
-import AdminPanel from './components/AdminPanel';
 import AdminAuthPage from './pages/AdminAuthPage';
+import AdminPanelPage from './pages/AdminPanelPage';
+import DeviceNotRegisteredPage from './pages/DeviceNotRegisteredPage';
 import PrivateRoute from './components/PrivateRoute';
-import ErrorPage from './pages/ErrorPage';
+import NotFoundPage from './pages/NotFoundPage';
 
-// Layout component using React.Fragment and Children
-const Layout = ({ children }) => (
-  <div>
-    <Navbar />
-    <div>
-      <Progressbar />
-      <main>{children}</main>
-    </div>
-    <Footer />
-  </div>
-);
-
-// Main App component using all providers for state and context management
+// Haupt-App-Komponente
 function App() {
+  console.log('App-Komponente geladen');
+
   return (
-    <ThemeProvider>
-      <LanguageProvider>
-        <ProgressBarProvider>
-          <AdminPanelProvider>
-            <Router>
-              <Layout>
-                <Routes>
-                  <Route path="/" element={<StartPage />} />
-                  <Route path="/qr-code-scan" element={<QRCodeScanPage />} />
-                  <Route path="/egk-verification" element={<EGKVerificationPage />} />
-                  <Route path="/form" element={<FormPage />} />
-                  <Route path="/complete" element={<ProcessCompletePage />} />
-                  <Route path="/admin" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
-                  <Route path="/admin-login" element={<AdminAuthPage />} />
-                  <Route path="*" element={<ErrorPage />} />
-                </Routes>
-              </Layout>
-            </Router>
-          </AdminPanelProvider>
-        </ProgressBarProvider>
-      </LanguageProvider>
-    </ThemeProvider>
+    <FlowProvider>
+      <ProgressBarProvider>
+        <AdminPanelProvider>
+          {/* Definiert die Haupt-Routenstruktur */}
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              {/* Öffentliche Seiten */}
+              <Route index element={<StartPage />} />
+              <Route path="admin-login" element={<AdminAuthPage />} />
+              <Route path="device-not-registered" element={<DeviceNotRegisteredPage />} />
+
+              {/* Geschützte Admin-Routen */}
+              <Route
+                path="admin"
+                element={
+                  <PrivateRoute errorMessage="Bitte melden Sie sich an, um auf das Admin-Panel zuzugreifen.">
+                    <AdminPanelPage />
+                  </PrivateRoute>
+                }
+              />
+
+              {/* Fehlerseite für ungültige Routen */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+          </Routes>
+        </AdminPanelProvider>
+      </ProgressBarProvider>
+    </FlowProvider>
   );
 }
 

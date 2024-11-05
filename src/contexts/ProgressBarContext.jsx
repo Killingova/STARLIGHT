@@ -1,36 +1,41 @@
-// src/contexts/ProgressBarContext.jsx
-import React, { createContext, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useState, useCallback, useMemo, useEffect } from 'react';
 
-// Erstellen des ProgressBarContext
+// Schritte des Check-in-Prozesses als konstante Daten
+const stepsData = [
+  { id: 'start', name: 'Start', percentage: 10, icon: 'StartIcon' },
+  { id: 'qrScan', name: 'QR-Code Scan', percentage: 25, icon: 'QrCode' },
+  { id: 'egkRead', name: 'eGK Lesen', percentage: 40, icon: 'CreditCard' },
+  { id: 'anamnesis', name: 'Anamnese', percentage: 60, icon: 'ClipboardList' },
+  { id: 'contactInfo', name: 'Kontaktinformationen', percentage: 75, icon: 'UserCheck' },
+  { id: 'complete', name: 'Fertig', percentage: 100, icon: 'CheckCircle' },
+];
+
+// ProgressBar-Kontext erstellen
 export const ProgressBarContext = createContext();
 
-// Provider-Komponente für den ProgressBarContext
 export function ProgressBarProvider({ children }) {
-  // Zustand für den Fortschritt und die Schritte der Progress-Bar
-  const [progress, setProgress] = useState(0);
-  const [steps] = useState([
-    { id: 'start', name: 'Start', percentage: 10, icon: 'StartIcon' },
-    { id: 'qrScan', name: 'QR-Code Scan', percentage: 25, icon: 'QrCode' },
-    { id: 'egkRead', name: 'eGK Lesen', percentage: 40, icon: 'CreditCard' },
-    { id: 'anamnesis', name: 'Anamnese', percentage: 60, icon: 'ClipboardList' },
-    { id: 'contactInfo', name: 'Kontaktinformationen', percentage: 75, icon: 'UserCheck' },
-    { id: 'complete', name: 'Fertig', percentage: 100, icon: 'CheckCircle' },
-  ]);
+  const [progress, setProgress] = useState(() => {
+    const savedProgress = localStorage.getItem('progress');
+    return savedProgress ? parseInt(savedProgress, 10) : 0;
+  });
 
-  // Funktion zum Aktualisieren des Fortschritts basierend auf dem Schritt
+  const [steps] = useState(stepsData);
+
   const updateProgress = useCallback((stepId) => {
     const step = steps.find((s) => s.id === stepId);
-    if (step) {
+    if (step && step.percentage !== progress) {
       setProgress(step.percentage);
     }
-  }, [steps]);
+  }, [steps, progress]);
 
-  // Funktion zum Zurücksetzen des Fortschritts
   const resetProgress = useCallback(() => {
     setProgress(0);
   }, []);
 
-  // Memoisieren des Kontextwerts für Performance-Optimierung
+  useEffect(() => {
+    localStorage.setItem('progress', progress);
+  }, [progress]);
+
   const contextValue = useMemo(() => ({
     progress,
     steps,
@@ -38,7 +43,6 @@ export function ProgressBarProvider({ children }) {
     resetProgress,
   }), [progress, steps, updateProgress, resetProgress]);
 
-  // Rückgabe des Providers mit dem Kontextwert und den Kindern
   return (
     <ProgressBarContext.Provider value={contextValue}>
       {children}
