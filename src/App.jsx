@@ -1,3 +1,5 @@
+// src/App.jsx
+
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
@@ -12,18 +14,18 @@ import StartPage from './pages/StartPage';
 import AdminAuthPage from './pages/AdminAuthPage';
 import AdminPanelPage from './pages/AdminPanelPage';
 import DeviceNotRegisteredPage from './pages/DeviceNotRegisteredPage';
-import PrivateRoute from './components/PrivateRoute';
+import QRCodeScanPage from './pages/QRCodeScanPage';
+import EGKVerificationPage from './pages/EGKVerificationPage';
+import FormPage from './pages/FormPage';
+import ProcessCompletePage from './pages/ProcessCompletePage';
 import NotFoundPage from './pages/NotFoundPage';
+import PrivateRoute from './components/PrivateRoute';
 
-// Haupt-App-Komponente
 function App() {
-  console.log('App-Komponente geladen');
-
   return (
     <FlowProvider>
       <ProgressBarProvider>
         <AdminPanelProvider>
-          {/* Definiert die Haupt-Routenstruktur */}
           <Routes>
             <Route path="/" element={<Layout />}>
               {/* Öffentliche Seiten */}
@@ -31,11 +33,17 @@ function App() {
               <Route path="admin-login" element={<AdminAuthPage />} />
               <Route path="device-not-registered" element={<DeviceNotRegisteredPage />} />
 
+              {/* Check-in Prozess */}
+              <Route path="qr-code-scan" element={<QRCodeScanPage />} />
+              <Route path="egk-verification" element={<EGKVerificationPage />} />
+              <Route path="form" element={<FormPage />} />
+              <Route path="process-complete" element={<ProcessCompletePage />} />
+
               {/* Geschützte Admin-Routen */}
               <Route
                 path="admin"
                 element={
-                  <PrivateRoute errorMessage="Bitte melden Sie sich an, um auf das Admin-Panel zuzugreifen.">
+                  <PrivateRoute>
                     <AdminPanelPage />
                   </PrivateRoute>
                 }

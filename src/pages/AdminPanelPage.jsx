@@ -6,34 +6,33 @@ import useAdminPanel from '../hooks/useAdminPanel';
 import { useNavigate } from 'react-router-dom';
 
 const AdminPanelPage = () => {
-  const { 
-    isKioskModeActive, 
-    setIsKioskModeActive, 
-    isDeviceRegistered, 
+  const {
+    isKioskModeActive,
+    setIsKioskModeActive,
+    isDeviceRegistered,
     setIsDeviceRegistered,
-    logout 
+    logout
   } = useContext(FlowContext);
-  
+
   const { selectedModules, toggleModule } = useAdminPanel();
   const navigate = useNavigate();
 
-  const toggleKioskMode = () => {
-    setIsKioskModeActive(!isKioskModeActive);
+  // Funktion zum Registrieren des Geräts und Starten des Check-ins
+  const handleRegisterAndStartCheckIn = () => {
+    setIsDeviceRegistered(true);
+    setIsKioskModeActive(true);
+    alert('Gerät erfolgreich registriert und Kiosk-Modus aktiviert!');
+    navigate('/'); // Navigiere zur Startseite des Check-ins
   };
 
-  const toggleDeviceRegistration = () => {
-    setIsDeviceRegistered(!isDeviceRegistered);
-    alert(
-      isDeviceRegistered
-        ? 'Gerät erfolgreich deregistriert!'
-        : 'Gerät erfolgreich registriert!'
-    );
+  // Funktion zum Deregistrieren des Geräts
+  const handleDeregisterDevice = () => {
+    setIsDeviceRegistered(false);
+    setIsKioskModeActive(false);
+    alert('Gerät erfolgreich deregistriert und Kiosk-Modus deaktiviert!');
   };
 
-  const handleCheckIn = () => {
-    navigate('/');
-  };
-
+  // Funktion zum Abmelden des Geräts (Logout)
   const handleDeviceLogout = () => {
     logout();
     navigate('/admin-login');
@@ -44,30 +43,39 @@ const AdminPanelPage = () => {
       <div className="bg-white p-10 rounded-lg shadow-xl max-w-lg w-full">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Admin Panel</h2>
 
-        {/* Kiosk-Modus-Umschalter */}
-        <div className="mb-6">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={isKioskModeActive}
-              onChange={toggleKioskMode}
-              className="mr-3 h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <span className="text-lg text-gray-700">Kiosk-Modus aktivieren</span>
-          </label>
-        </div>
+        {/* Bedingte Darstellung basierend auf dem Registrierungsstatus des Geräts */}
+        {!isDeviceRegistered ? (
+          // Wenn das Gerät nicht registriert ist, zeige den Button zum Registrieren und Starten des Check-ins
+          <button
+            onClick={handleRegisterAndStartCheckIn}
+            className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full mb-6"
+          >
+            Gerät registrieren und Check-in starten
+          </button>
+        ) : (
+          // Wenn das Gerät registriert ist, zeige Optionen zum Deregistrieren und Abmelden
+          <>
+            {/* Button zum Deregistrieren des Geräts */}
+            <button
+              onClick={handleDeregisterDevice}
+              className="bg-red-600 text-white px-4 py-3 rounded-lg w-full mb-6"
+            >
+              Gerät deregistrieren
+            </button>
 
-        {/* Geräte-Registrierung */}
-        <button
-          onClick={toggleDeviceRegistration}
-          className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full mb-6 hover:bg-blue-700 transition duration-300"
-        >
-          {isDeviceRegistered ? 'Gerät deregistrieren' : 'Gerät registrieren'}
-        </button>
+            {/* Button zum Abmelden des Geräts */}
+            <button
+              onClick={handleDeviceLogout}
+              className="bg-gray-600 text-white px-4 py-3 rounded-lg w-full mb-6"
+            >
+              Gerät abmelden
+            </button>
+          </>
+        )}
 
-        {/* Module */}
+        {/* Modulverwaltung bleibt erhalten */}
         <div className="mt-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Module</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Module verwalten</h3>
           {Object.keys(selectedModules).map((module) => (
             <div key={module} className="mb-3">
               <label className="flex items-center">
@@ -75,29 +83,13 @@ const AdminPanelPage = () => {
                   type="checkbox"
                   checked={selectedModules[module]}
                   onChange={() => toggleModule(module)}
-                  className="mr-3 h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="mr-3 h-5 w-5 text-blue-600 border-gray-300 rounded"
                 />
                 <span className="capitalize text-gray-700">{module}</span>
               </label>
             </div>
           ))}
         </div>
-
-        {/* Check-in */}
-        <button
-          onClick={handleCheckIn}
-          className="bg-green-500 text-white px-4 py-3 rounded-lg w-full mt-8 hover:bg-green-600 transition duration-300"
-        >
-          Check-in starten
-        </button>
-
-        {/* Device Logout */}
-        <button
-          onClick={handleDeviceLogout}
-          className="bg-red-600 text-white px-4 py-3 rounded-lg w-full mt-4 hover:bg-red-700 transition duration-300"
-        >
-          Gerät abmelden
-        </button>
       </div>
     </div>
   );

@@ -1,44 +1,50 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { FlowContext } from '../contexts/FlowContext'; // FlowContext importieren
+import React, { useContext, useState, useRef } from 'react';
+import { FlowContext } from '../contexts/FlowContext';
 import { useNavigate } from 'react-router-dom';
 
 const StartPage = () => {
-  const { isDeviceRegistered } = useContext(FlowContext); // Gerät registriert?
-  const [loading, setLoading] = useState(true); // Ladezustand
+  const { isDeviceRegistered } = useContext(FlowContext);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const hasCheckedRegistration = useRef(false);
 
-  useEffect(() => {
-    // Simuliere einen Ladevorgang, um den Status der Registrierung zu überprüfen
-    const checkRegistration = () => {
-      setLoading(true);
-      setTimeout(() => {
-        setLoading(false);
-        if (!isDeviceRegistered) {
-          navigate('/device-not-registered'); // Umleiten, falls nicht registriert
-        }
-      }, 1000); // Simuliertes Laden
-    };
+  const checkRegistration = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      if (!isDeviceRegistered) {
+        navigate('/device-not-registered');
+      }
+    }, 1000);
+  };
 
+  if (!hasCheckedRegistration.current) {
     checkRegistration();
-  }, [isDeviceRegistered, navigate]);
+    hasCheckedRegistration.current = true;
+  }
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-        <h2 className="text-2xl">Überprüfen der Registrierung...</h2>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+        <div className="bg-white p-10 rounded-xl shadow-lg max-w-md w-full text-center">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Überprüfen der Registrierung...</h2>
+          <p className="text-gray-600">Bitte warten Sie einen Moment.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold mb-8">Willkommen zum Check-In</h1>
-      <button
-        onClick={() => navigate('/qr-code-scan')}
-        className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition-colors duration-300 shadow-md text-lg"
-      >
-        Check-In starten
-      </button>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+      <div className="bg-white p-10 rounded-xl shadow-lg max-w-md w-full text-center">
+        <h1 className="text-4xl font-bold mb-6 text-gray-800">Willkommen zum Check-In</h1>
+        <button
+          onClick={() => navigate('/qr-code-scan')}
+          className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300"
+        >
+          Check-In starten
+        </button>
+      </div>
     </div>
   );
 };

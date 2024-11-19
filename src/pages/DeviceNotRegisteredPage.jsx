@@ -1,8 +1,5 @@
-// src/pages/DeviceNotRegisteredPage.jsx
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Notification from '../components/Notification'; // Annahme, dass du eine Notification-Komponente hast
 
 const DeviceNotRegisteredPage = () => {
   const navigate = useNavigate();
@@ -12,26 +9,22 @@ const DeviceNotRegisteredPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
-      {/* Hauptbenachrichtigung */}
-      <Notification
-        type="warning"
-        message="Wichtiger Hinweis: Gerät nicht registriert!"
-        className="mb-6"
-      />
-      
-      <h1 className="text-3xl font-bold mb-4 text-red-600">Gerät nicht registriert</h1>
-      <p className="text-center mb-6 max-w-lg">
-        Dieses Gerät ist nicht registriert oder der Kiosk-Modus ist nicht aktiv.
-        Bitte wenden Sie sich an das Praxispersonal oder melden Sie sich als Admin an, um das Gerät zu registrieren.
-      </p>
-
-      <button
-        onClick={handleAdminLogin}
-        className="bg-blue-600 text-white text-lg px-8 py-3 rounded hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-      >
-        Gerät registrieren
-      </button>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+      <div className="bg-white p-10 rounded-xl shadow-lg max-w-md w-full">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+          Gerät nicht registriert
+        </h2>
+        <p className="text-lg text-center mb-6 text-gray-700">
+          Dieses Gerät ist nicht registriert oder der Kiosk-Modus ist nicht aktiv.
+          Bitte wenden Sie sich an das Praxispersonal oder melden Sie sich als Admin an, um das Gerät zu registrieren.
+        </p>
+        <button
+          onClick={handleAdminLogin}
+          className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300"
+        >
+          Gerät registrieren
+        </button>
+      </div>
     </div>
   );
 };
