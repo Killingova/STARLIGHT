@@ -1,31 +1,35 @@
+// src/pages/DeviceNotRegisteredPage.jsx
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import ContentWrapper from '../components/ContentWrapper'; // Wrapper-Komponente, falls vorhanden
 
 const DeviceNotRegisteredPage = () => {
   const navigate = useNavigate();
 
+  // Funktion zur Navigation zur Admin-Login-Seite
   const handleAdminLogin = () => {
     navigate('/admin-login');
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
-      <div className="bg-white p-10 rounded-xl shadow-lg max-w-md w-full">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+    <ContentWrapper>
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h2 className="text-2xl font-bold mb-4 text-white text-center">
           Gerät nicht registriert
         </h2>
-        <p className="text-lg text-center mb-6 text-gray-700">
+        <p className="text-center text-white mb-6">
           Dieses Gerät ist nicht registriert oder der Kiosk-Modus ist nicht aktiv.
           Bitte wenden Sie sich an das Praxispersonal oder melden Sie sich als Admin an, um das Gerät zu registrieren.
         </p>
         <button
           onClick={handleAdminLogin}
-          className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300"
+          className="px-6 py-3 bg-white text-blue-500 font-semibold rounded-lg hover:bg-gray-100 transition"
         >
           Gerät registrieren
         </button>
       </div>
-    </div>
+    </ContentWrapper>
   );
 };
 

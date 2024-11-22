@@ -8,34 +8,36 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="bg-blue-600 p-4 flex justify-between items-center shadow-md">
+    <nav className="bg-blue-600 text-white px-4 py-3 flex justify-between items-center shadow-md">
       {/* Logo und Startseiten-Link */}
       <div className="flex items-center space-x-3">
-        <Link to="/" className="text-white text-xl font-semibold flex items-center space-x-1">
-          <Home size={24} />
-          <span>Quincy Check-In</span>
+        <Link to="/" className="flex items-center space-x-2">
+          <Home className="w-6 h-6" />
+          <span className="text-lg font-semibold">Quincy Check-In</span>
         </Link>
       </div>
 
       {/* Dynamische Navigationslinks */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-6">
         {/* Kiosk-Modus-Anzeige */}
-        <div className="text-sm text-white mr-4">
+        <div className="text-sm flex items-center space-x-2">
           {isKioskModeActive ? (
-            <span className="flex items-center">
-              <Lock size={18} className="mr-1" /> Kiosk-Modus aktiv
+            <span className="flex items-center space-x-1">
+              <Lock className="w-5 h-5" />
+              <span>Kiosk-Modus aktiv</span>
             </span>
           ) : (
-            <span className="flex items-center">
-              <Unlock size={18} className="mr-1" /> Admin-Modus
+            <span className="flex items-center space-x-1">
+              <Unlock className="w-5 h-5" />
+              <span>Admin-Modus</span>
             </span>
           )}
         </div>
 
         {/* Admin-Link nur im Admin-Modus */}
         {!isKioskModeActive && (
-          <Link to="/admin" className="text-white flex items-center">
-            <Menu size={28} className="mr-1" />
+          <Link to="/admin" className="flex items-center space-x-2">
+            <Menu className="w-6 h-6" />
             <span>Admin</span>
           </Link>
         )}
@@ -47,9 +49,9 @@ const Navbar = () => {
               logout();
               navigate('/');
             }}
-            className="text-white flex items-center hover:text-gray-300 transition-colors"
+            className="flex items-center space-x-2"
           >
-            <LogOut size={24} className="mr-1" />
+            <LogOut className="w-6 h-6" />
             <span>Abmelden</span>
           </button>
         )}

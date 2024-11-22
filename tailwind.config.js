@@ -6,7 +6,11 @@ export default {
     './src/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      gridTemplateRows: {
+        layout: 'auto auto 1fr auto', // Layout mit flexibler Mitte und festen oberen und unteren Bereichen
+      },
+    },
   },
   plugins: [],
 }

@@ -1,5 +1,3 @@
-// src/hooks/useCamera.js
-
 import { useCallback, useRef, useEffect } from 'react';
 import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
 
@@ -9,9 +7,9 @@ export function useCamera({ videoRef, onScan, setError }) {
   // Funktion zum Starten der Kamera
   const startCamera = useCallback(async () => {
     try {
-      if (codeReaderRef.current) {
-        // Falls bereits ein Reader vorhanden ist, nichts tun
-        return;
+      if (codeReaderRef.current || videoRef.current.srcObject) {
+        console.warn('Kamera ist bereits aktiv.');
+        return; // Beendet die Funktion, wenn die Kamera bereits aktiv ist
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -30,13 +28,13 @@ export function useCamera({ videoRef, onScan, setError }) {
           }
           if (error && !(error instanceof NotFoundException)) {
             console.error('Scan-Fehler:', error);
-            setError(error);
+            setError(error.message || 'Fehler beim Scannen des QR-Codes.');
           }
         }
       );
     } catch (err) {
       console.error('Fehler beim Starten der Kamera:', err);
-      setError(err);
+      setError(err.message || 'Fehler beim Zugriff auf die Kamera.');
     }
   }, [videoRef, onScan, setError]);
 

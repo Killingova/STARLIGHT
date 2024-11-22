@@ -9,18 +9,22 @@ export const FlowProvider = ({ children }) => {
     const savedValue = localStorage.getItem('isKioskModeActive');
     return savedValue !== null ? JSON.parse(savedValue) : false;
   });
+  
   const [startPosition, setStartPosition] = useState(() => {
     const savedValue = localStorage.getItem('startPosition');
     return savedValue !== null ? JSON.parse(savedValue) : '/start';
   });
+  
   const [isDeviceRegistered, setIsDeviceRegistered] = useState(() => {
     const savedValue = localStorage.getItem('isDeviceRegistered');
     return savedValue !== null ? JSON.parse(savedValue) : false;
   });
+  
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const savedValue = localStorage.getItem('isAuthenticated');
     return savedValue !== null ? JSON.parse(savedValue) : false;
   });
+  
   const [flowState, setFlowState] = useState(() => {
     const savedValue = localStorage.getItem('flowState');
     return savedValue !== null ? JSON.parse(savedValue) : { currentStep: 0 };
@@ -29,10 +33,6 @@ export const FlowProvider = ({ children }) => {
   const navigate = useNavigate();
 
   // Speichern von Zustandswerten im LocalStorage
-  const saveToLocalStorage = (key, value) => {
-    localStorage.setItem(key, JSON.stringify(value));
-  };
-
   useEffect(() => {
     saveToLocalStorage('isKioskModeActive', isKioskModeActive);
   }, [isKioskModeActive]);
@@ -46,12 +46,12 @@ export const FlowProvider = ({ children }) => {
   }, [isDeviceRegistered]);
 
   useEffect(() => {
-    saveToLocalStorage('flowState', flowState);
-  }, [flowState]);
-
-  useEffect(() => {
     saveToLocalStorage('isAuthenticated', isAuthenticated);
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    saveToLocalStorage('flowState', flowState);
+  }, [flowState]);
 
   // Authentifizierungs- und Logout-Funktionen
   const login = () => {
@@ -65,31 +65,33 @@ export const FlowProvider = ({ children }) => {
   };
 
   const updateFlow = (newState) => {
-    setFlowState((prev) => ({ ...prev, ...newState }));
+    setFlowState(prev => ({ ...prev, ...newState }));
   };
 
-  const contextValue = useMemo(
-    () => ({
-      isKioskModeActive,
-      setIsKioskModeActive,
-      startPosition,
-      setStartPosition,
-      isDeviceRegistered,
-      setIsDeviceRegistered,
-      isAuthenticated,
-      login,
-      logout,
-      flowState,
-      updateFlow,
-    }),
-    [
-      isKioskModeActive,
-      startPosition,
-      isDeviceRegistered,
-      isAuthenticated,
-      flowState,
-    ]
-  );
+  const contextValue = useMemo(() => ({
+    isKioskModeActive,
+    setIsKioskModeActive,
+    startPosition,
+    setStartPosition,
+    isDeviceRegistered,
+    setIsDeviceRegistered,
+    isAuthenticated,
+    login,
+    logout,
+    flowState,
+    updateFlow,
+  }), [
+    isKioskModeActive,
+    startPosition,
+    isDeviceRegistered,
+    isAuthenticated,
+    flowState,
+  ]);
 
   return <FlowContext.Provider value={contextValue}>{children}</FlowContext.Provider>;
+};
+
+// Hilfsfunktion zum Speichern im LocalStorage
+const saveToLocalStorage = (key, value) => {
+  localStorage.setItem(key, JSON.stringify(value));
 };

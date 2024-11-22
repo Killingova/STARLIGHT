@@ -1,14 +1,15 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { FlowContext } from '../contexts/FlowContext';
 import { useNavigate } from 'react-router-dom';
+import ContentWrapper from '../components/ContentWrapper';
 
 const StartPage = () => {
   const { isDeviceRegistered } = useContext(FlowContext);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const hasCheckedRegistration = useRef(false);
 
-  const checkRegistration = () => {
+  const checkRegistration = useCallback(() => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -16,36 +17,34 @@ const StartPage = () => {
         navigate('/device-not-registered');
       }
     }, 1000);
-  };
+  }, [isDeviceRegistered, navigate]);
 
-  if (!hasCheckedRegistration.current) {
-    checkRegistration();
-    hasCheckedRegistration.current = true;
-  }
+  useEffect(() => {
+    if (!hasCheckedRegistration.current) {
+      checkRegistration();
+      hasCheckedRegistration.current = true;
+    }
+  }, [checkRegistration]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
-        <div className="bg-white p-10 rounded-xl shadow-lg max-w-md w-full text-center">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Überprüfen der Registrierung...</h2>
-          <p className="text-gray-600">Bitte warten Sie einen Moment.</p>
-        </div>
-      </div>
+      <ContentWrapper>
+        <h2 className="text-2xl font-bold text-gray-800">Überprüfen der Registrierung...</h2>
+        <p className="text-gray-600">Bitte warten Sie einen Moment.</p>
+      </ContentWrapper>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
-      <div className="bg-white p-10 rounded-xl shadow-lg max-w-md w-full text-center">
-        <h1 className="text-4xl font-bold mb-6 text-gray-800">Willkommen zum Check-In</h1>
-        <button
-          onClick={() => navigate('/qr-code-scan')}
-          className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300"
-        >
-          Check-In starten
-        </button>
-      </div>
-    </div>
+    <ContentWrapper>
+      <h1 className="text-4xl font-bold text-gray-800 mb-6">Willkommen zum Check-In</h1>
+      <button
+        onClick={() => navigate('/qr-code-scan')}
+        className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg transition transform active:scale-95"
+      >
+        Check-In starten
+      </button>
+    </ContentWrapper>
   );
 };
 

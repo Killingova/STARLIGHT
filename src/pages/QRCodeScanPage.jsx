@@ -1,77 +1,64 @@
-// src/pages/QRCodeScanPage.jsx
-
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ContentWrapper from '../components/ContentWrapper';
 import CameraComponent from '../components/CameraComponent';
 import Notification from '../components/Notification';
 import { ProgressBarContext } from '../contexts/ProgressBarContext';
 import appointmentService from '../services/appointmentService';
 
 const QRCodeScanPage = () => {
-  const [error, setError] = useState(null); // Zustand für Fehlernachrichten
-  const [showNotification, setShowNotification] = useState(false); // Zustand für die Erfolgsbenachrichtigung
+  const [error, setError] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
   const { updateProgress } = useContext(ProgressBarContext);
   const navigate = useNavigate();
 
-  // Callback-Funktion, die aufgerufen wird, wenn der QR-Code erfolgreich gescannt wurde
+  // Callback-Funktion zum Verarbeiten des QR-Codes
   const handleScan = useCallback(
     async (qrCodeData, stopCamera) => {
       try {
-        // Senden der QR-Code-Daten an den appointmentService zur Terminbestätigung
         const appointment = await appointmentService.confirmAppointment(qrCodeData);
-
-        // Fortschritt aktualisieren
         updateProgress('qrScan');
-
-        // Kamera stoppen
         stopCamera();
-
-        // Erfolgsbenachrichtigung anzeigen
         setShowNotification(true);
-
-        // Nach einer kurzen Verzögerung zur nächsten Seite navigieren
-        setTimeout(() => {
-          navigate('/egk-verification');
-        }, 2000); // 2 Sekunden Verzögerung (kann angepasst werden)
+        setTimeout(() => navigate('/egk-verification'), 2000);
       } catch (err) {
-        // Fehler setzen und in der Konsole ausgeben
-        setError(err.message);
+        setError(err.message || 'Fehler beim Scannen des QR-Codes.');
         console.error('QR-Code-Verarbeitung fehlgeschlagen:', err);
       }
     },
-    [updateProgress, navigate]
+    [appointmentService, updateProgress, navigate]
   );
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
-      <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
-        <h2 className="text-3xl font-bold mb-6 text-gray-800">Bitte scannen Sie Ihren QR-Code</h2>
+    <ContentWrapper>
+      <h2 className="text-3xl font-bold mb-6 text-center text-white">Bitte scannen Sie Ihren QR-Code</h2>
 
-        {/* Fehleranzeige */}
-        {error && (
-          <Notification
-            title="Fehler"
-            message={error}
-            type="error"
-            onClose={() => setError(null)} // Ermöglicht das Schließen der Fehlermeldung
-          />
-        )}
+      {/* Fehleranzeige */}
+      {error && (
+        <Notification
+          title="Fehler"
+          message={error}
+          type="error"
+          onClose={() => setError(null)}
+        />
+      )}
 
-        {/* Erfolgsbenachrichtigung */}
-        {showNotification && (
-          <Notification
-            title="Scan erfolgreich"
-            message="Ihr QR-Code wurde erfolgreich gescannt."
-            type="success"
-          />
-        )}
+      {/* Erfolgsbenachrichtigung */}
+      {showNotification && (
+        <Notification
+          title="Scan erfolgreich"
+          message="Ihr QR-Code wurde erfolgreich gescannt."
+          type="success"
+          onClose={() => setShowNotification(false)}
+          duration={2000}
+        />
+      )}
 
-        {/* Kamera-Komponente zum Scannen des QR-Codes */}
-        {!showNotification && (
-          <CameraComponent onScan={handleScan} setError={setError} />
-        )}
-      </div>
-    </div>
+      {/* Kamera-Komponente */}
+      {!showNotification && (
+        <CameraComponent onScan={handleScan} setError={setError} />
+      )}
+    </ContentWrapper>
   );
 };
 
